@@ -1,0 +1,11 @@
+{
+  "name": "cadastro_paciente_front",
+  "version": "1.0.0",
+  "description": "Trabalho de Computação paralela e distribuida",
+  "main": "index.js",
+  "scripts": {
+    "test": "nodemon index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}

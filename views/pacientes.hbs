@@ -1,0 +1,174 @@
+<html lang="pt-br">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cadastro de Pacientes</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        .logrocket {
+            background-color: #764abc;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="py-5 text-center">
+            <h2>Lista de Pacientes Cadastrados</h2>
+        </div>
+
+        <table class="table" id="paciente_table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nome</th>
+                    <th>Cartão SUS</th>
+                    <th>Data de Nascimento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each results}}
+                <tr>
+                    <td>{{ id }}</td>
+                    <td>{{ nome }}</td>
+                    <td>{{ cartaoSus }}</td>
+                    <td>{{ dataNascimento }}</td>
+                    <td>
+                        <a href="javascript:void(0);" class="btn btn-sm edit logrocket" data-id="{{ id }}"
+                            data-nome="{{ nome }}" data-cartaoSus="{{ cartaoSus }}" data-dataNascimento="{{ dataNascimento }}">Editar</a>
+                        <a href="javascript:void(0);"  class="btn btn-sm btn-danger remove" data-id="{{ id }}">Excluir</a>
+                    </td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="5" class="text-center">Não foi possivel carregar dados</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <button class="btn btn-success float-right" data-toggle="modal" data-target="#novoPacienteModal">Adicionar</button>
+    </div>
+
+    <!-- New Paciente Modal -->
+    <form action="/save" method="post">
+        <div class="modal fade" id="novoPacienteModal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Adicionar Paciente</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" name="nome" class="form-control" placeholder="Nome do Paciente"
+                                required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" name="cartaoSus" class="form-control" placeholder="Cartão SUS" required="required">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="date" name="dataNascimento" class="form-control" placeholder="Data de Nascimento"
+                                required="required">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn logrocket">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Edit Paciente Modal -->
+    <form action="/update" method="post">
+        <div class="modal fade" id="editPacienteModal" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Editar Paciente</h4>
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span>&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input type="text" name="nome" class="form-control nome" placeholder="Nome do Paciente"
+                                required="required">
+                        </div>
+                        {{!-- troca classe --}}
+                        <div class="form-group">
+                            <input type="text" name="cartaoSus" class="form-control cartaoSus" placeholder="Cartão SUS"
+                                required="required">
+                        </div>
+                        {{!-- troca classe --}}
+                        <div class="form-group">
+                            <input type="date" name="dataNascimento" class="form-control dataNascimento" placeholder="Data de Nascimento"
+                                required="required">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="id" class="paciente_id">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn logrocket">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <!-- Remove paciente Modal -->
+    <form id="add-row-form" action="/remove" method="post">
+        <div class="modal fade" id="removePacienteModal" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title"></h4>Excluir Paciente</h4>
+                        <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza?
+                    </div>
+                    <div class="modal-footer">
+                        <input type="hidden" name="paciente_id" class="form-control paciente_id_removal"
+                            required="required">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                        <button type="submit" class="btn logrocket">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+  <script>
+        $(document).ready(function () {
+            //mudar nome tabela
+            $('#paciente_table').on('click', '.edit', function () {
+                //mudar id
+                $('#editPacienteModal').modal('show');
+                $('.paciente_id').val($(this).data('id'));
+                $('.nome').val($(this).data('nome'));
+                $('.cartaoSus').val($(this).data('cartaoSus'));
+                $('.dataNascimento').val($(this).data('dataNascimento'));
+            }).on('click', '.remove', function () {
+                $('#removePacienteModal').modal('show');
+                $('.paciente_id_removal').val($(this).data('id'));
+            });
+        });
+    </script>
+</body>
+
+</html>
